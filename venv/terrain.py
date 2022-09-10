@@ -1,7 +1,7 @@
 from PIL import Image
 
 # Open image
-img = Image.open("assets/crater2.png")
+img = Image.open('assets/crater.png')
 
 # Resize smoothly down to 32x32 pixels
 result = img.resize((32,32), resample=Image.Resampling.BILINEAR)

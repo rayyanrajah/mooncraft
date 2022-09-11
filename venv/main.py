@@ -5,6 +5,7 @@ from terrain import terrain_dict
 
 app = Ursina()
 
+# textures and soundtrack
 white_cube_texture = 'white_cube'
 vertical_grad_texture = 'vertical_gradient'
 moon_texture = load_texture('assets/moonrock.png')
@@ -14,15 +15,19 @@ minecraft_soundtrack = Audio('minecraft_soundtrack.mp3', loop=True)
 block_pick = 1
 
 
+# for each number key pressed (from 1-6 inclusive),
+# there is a different texture and/or colour
 def update():
     global block_pick
 
     for i in range(1, 7):
         if held_keys[f'{i}']: block_pick = i
 
+    # space constantly rotates to give illusion that the moon is moving
     sky.rotate((time.dt, time.dt, time.dt))
 
 
+# class for block
 class Voxel(Button):
     def __init__(self, position=(0, 0, 0), texture=moon_texture, color=color.color(0, 0, random.uniform(0.9, 1.0))):
         super().__init__(
@@ -37,6 +42,7 @@ class Voxel(Button):
 
     def input(self, key):
         if self.hovered:
+            # place block
             if key == 'left mouse down':
                 if block_pick == 1: voxel = Voxel(position=self.position + mouse.normal, texture=moon_texture)
                 if block_pick == 2: voxel = Voxel(position=self.position + mouse.normal, texture=white_cube_texture)
@@ -48,11 +54,12 @@ class Voxel(Button):
                                                   color=color.black)
                 if block_pick == 6: voxel = Voxel(position=self.position + mouse.normal, texture=vertical_grad_texture,
                                                   color=color.white)
-
+            # destroy block
             if key == 'right mouse down':
                 destroy(self)
 
 
+# generate initial moon terrain
 for z in range(-16, 16):
     for x in range(-16, 16):
         voxel = Voxel(position=(x, 0, z))
